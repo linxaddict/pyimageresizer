@@ -2,20 +2,13 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+from model import Density
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
 class MainWindow:
-    DENSITIES = [
-        ['xxxhdpi'],
-        ['xxhdpi'],
-        ['xhdpi'],
-        ['hdpi'],
-        ['mdpi'],
-        ['ldpi']
-    ]
 
     def _find_window(self, builder: Gtk.Builder) -> Gtk.Window:
         return builder.get_object('window_main')
@@ -44,8 +37,8 @@ class MainWindow:
     def _find_ldpi_chbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
         return builder.get_object('chbox_ldpi')
 
-    def _append_densities(self, list_store: Gtk.ListStore):
-        for density in MainWindow.DENSITIES:
+    def _append_densities(self, list_store: Gtk.ListStore, densities: [str]):
+        for density in densities:
             list_store.append(density)
 
     def _initialize_views_state(self, presenter) -> None:
@@ -56,6 +49,9 @@ class MainWindow:
         self.chbox_mdpi.set_active(presenter.mdpi)
         self.chbox_ldpi.set_active(presenter.ldpi)
 
+        self._append_densities(self.density_list_store, presenter.generate_densities())
+        self.cbox_density.set_active(0)
+
     def __init__(self, view_resource: str, gtk_builder: Gtk.Builder):
         gtk_builder.add_from_file(view_resource)
         gtk_builder.connect_signals(self)
@@ -63,10 +59,6 @@ class MainWindow:
         self.window = self._find_window(gtk_builder)
         self.density_list_store = self._find_density_list_store(gtk_builder)
         self.cbox_density = self._find_density_cbox(gtk_builder)
-
-        self._append_densities(self.density_list_store)
-
-        self.cbox_density.set_active(0)
 
         self.chbox_xxxhdpi = self._find_xxxhdpi_chbox(gtk_builder)
         self.chbox_xxhdpi = self._find_xxhdpi_chbox(gtk_builder)
@@ -111,10 +103,12 @@ class MainWindow:
 
     def on_density_cbox_changed(self, widget: Gtk.Widget) -> None:
         tree_iter = widget.get_active_iter()
+
         if tree_iter != None:
             model = widget.get_model()
             name = model[tree_iter][:1]
-            print("Selected: name=%s" % name)
+
+            self.presenter.density = Density(name[0])
 
     def toggle_xxxhdpi(self, toggled: bool) -> None:
         self.chbox_xxxhdpi.set_active(toggled)

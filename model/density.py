@@ -11,3 +11,4 @@ class Density(Enum):
     hdpi = 'hdpi'
     mdpi = 'mdpi'
     ldpi = 'ldpi'
+

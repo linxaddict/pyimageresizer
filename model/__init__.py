@@ -1,3 +1,3 @@
 __all__ = ['Density']
 
-import density.Density
+from model.density import Density
