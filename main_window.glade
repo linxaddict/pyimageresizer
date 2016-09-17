@@ -86,6 +86,7 @@
                 <property name="margin_top">4</property>
                 <property name="margin_bottom">4</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_xxxhdpi_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -101,6 +102,7 @@
                 <property name="margin_top">4</property>
                 <property name="margin_bottom">4</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_xxhdpi_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -116,6 +118,7 @@
                 <property name="margin_top">4</property>
                 <property name="margin_bottom">4</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_xhdpi_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -131,6 +134,7 @@
                 <property name="margin_top">4</property>
                 <property name="margin_bottom">4</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_hdpi_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -146,6 +150,7 @@
                 <property name="margin_top">4</property>
                 <property name="margin_bottom">4</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_mdpi_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -161,6 +166,7 @@
                 <property name="margin_top">4</property>
                 <property name="margin_bottom">4</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_ldpi_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">0</property>
