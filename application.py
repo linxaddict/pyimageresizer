@@ -8,7 +8,7 @@ from main_presenter import MainPresenter
 
 
 class Application:
-    def run(self):
+    def run(self) -> None:
         gtk_builder = Gtk.Builder()
 
         main_window = MainWindow('main_window.glade', gtk_builder)
