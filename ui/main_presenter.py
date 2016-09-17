@@ -1,4 +1,9 @@
+__author__ = 'Marcin Przepiórkowski'
+__email__ = 'mprzepiorkowski@gmail.com'
+
+
 class MainPresenter:
+
     def __init__(self, main_view):
         self.main_view = main_view
 

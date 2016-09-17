@@ -51,6 +51,7 @@
                 <property name="model">density_list_store</property>
                 <property name="active">0</property>
                 <property name="id_column">0</property>
+                <signal name="changed" handler="on_density_cbox_changed" swapped="no"/>
                 <child>
                   <object class="GtkCellRendererText" id="density_cell_render"/>
                   <attributes>
@@ -201,7 +202,7 @@
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
-            <property name="pixbuf">res/ic_image.png</property>
+            <property name="pixbuf">img/ic_image.png</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -218,13 +219,13 @@
         <property name="title">PyImageResizer</property>
         <property name="subtitle">Image resizer for Android</property>
         <property name="show_close_button">True</property>
-          <child>
-            <object class="GtkFileChooserButton">
-              <property name="visible">True</property>
-              <property name="can_focus">False</property>
-              <property name="title" translatable="yes"/>
-            </object>
-          </child>
+        <child>
+          <object class="GtkFileChooserButton">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="title" translatable="yes"/>
+          </object>
+        </child>
       </object>
     </child>
   </object>

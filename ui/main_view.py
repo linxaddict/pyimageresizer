@@ -3,6 +3,9 @@ gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
 
+__author__ = 'Marcin Przepiórkowski'
+__email__ = 'mprzepiorkowski@gmail.com'
+
 
 class MainWindow:
     DENSITIES = [
@@ -130,4 +133,3 @@ class MainWindow:
 
     def toggle_ldpi(self, toggled: bool) -> None:
         self.chbox_ldpi.set_active(toggled)
-
