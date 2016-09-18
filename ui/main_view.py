@@ -110,6 +110,9 @@ class MainWindow:
 
             self.presenter.density = Density(name[0])
 
+    def on_file_chosen(self, widget):
+        self.presenter.set_image(widget.get_filename())
+
     def toggle_xxxhdpi(self, toggled: bool) -> None:
         self.chbox_xxxhdpi.set_active(toggled)
 

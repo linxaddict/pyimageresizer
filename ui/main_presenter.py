@@ -1,4 +1,5 @@
 from model import Density
+from image import ImageProcessor
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -6,7 +7,30 @@ __email__ = 'mprzepiorkowski@gmail.com'
 
 class MainPresenter:
 
-    def __init__(self, main_view):
+    def _get_selected_densities(self) -> [Density]:
+        densities = []
+
+        if self.xxxhdpi:
+            densities.append(Density.xxxhdpi)
+
+        if self.xxhdpi:
+            densities.append(Density.xxhdpi)
+
+        if self.xhdpi:
+            densities.append(Density.xhdpi)
+
+        if self.hdpi:
+            densities.append(Density.hdpi)
+
+        if self.mdpi:
+            densities.append(Density.mdpi)
+
+        if self.ldpi:
+            densities.append(Density.ldpi)
+
+        return densities
+
+    def __init__(self, main_view, image_processor: ImageProcessor):
         self.main_view = main_view
 
         self._xxxhdpi = False
@@ -17,6 +41,8 @@ class MainPresenter:
         self._ldpi = False
 
         self._density = Density.xxxhdpi
+
+        self._image_processor = image_processor
 
     def generate_densities(self) -> [str]:
         d = []
@@ -87,3 +113,9 @@ class MainPresenter:
     @density.setter
     def density(self, value: Density) -> None:
         self._density = value
+
+    def set_image(self, file_name: str) -> None:
+        self.file_name = file_name
+
+        for d in self._get_selected_densities():
+            self._image_processor.scale(self.density, d, self.file_name)
