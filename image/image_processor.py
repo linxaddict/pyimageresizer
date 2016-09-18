@@ -64,3 +64,15 @@ class ImageProcessor:
         out_image.save(out_path)
 
         return out_path
+
+    def image_size(self, filename: str) -> (int, int):
+        image = Image.open(filename)
+        return image.size
+
+    def image_format(self, filename: str) -> str:
+        image = Image.open(filename)
+        return image.format
+
+    def image_mode(self, filename: str) -> str:
+        image = Image.open(filename)
+        return image.mode

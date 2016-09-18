@@ -31,6 +31,9 @@ class MainWindow:
 
         self.dialog_image_error = builder.get_object('dialog_image_error')
 
+        self.label_filename = builder.get_object('label_filename')
+        self.label_image_info = builder.get_object('label_image_info')
+
     def _append_densities(self, list_store: Gtk.ListStore, densities: [str]):
         for density in densities:
             list_store.append(density)
@@ -137,3 +140,9 @@ class MainWindow:
 
     def on_scale_selected_file(self, widget):
         self.presenter.scale_selected_file()
+
+    def set_filename(self, filename: str) -> None:
+        self.label_filename.set_text(filename)
+
+    def set_image_info(self, image_info: str) -> None:
+        self.label_image_info.set_text(image_info)

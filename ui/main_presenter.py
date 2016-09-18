@@ -1,3 +1,5 @@
+import os
+
 from model import Density
 from image import ImageProcessor
 
@@ -29,6 +31,13 @@ class MainPresenter:
             densities.append(Density.ldpi)
 
         return densities
+
+    def _generate_image_info(self, filename) -> str:
+        size = self._image_processor.image_size(filename)
+        img_format = self._image_processor.image_format(filename)
+        mode = self._image_processor.image_mode(filename)
+
+        return '%d x %d, %s, %s' % (size[0], size[1], img_format, mode)
 
     def __init__(self, main_view, image_processor: ImageProcessor):
         self.main_view = main_view
@@ -114,8 +123,10 @@ class MainPresenter:
     def density(self, value: Density) -> None:
         self._density = value
 
-    def set_image(self, file_name: str) -> None:
-        self.file_name = file_name
+    def set_image(self, filename: str) -> None:
+        self.file_name = filename
+        self.main_view.set_filename(os.path.basename(filename))
+        self.main_view.set_image_info(self._generate_image_info(filename))
 
     def scale_selected_file(self) -> None:
         if self.file_name:
