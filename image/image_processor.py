@@ -44,7 +44,7 @@ class ImageProcessor:
             Density.ldpi: 0.75
         }
 
-    def scale(self, in_density: Density, out_density: Density, filename: str):
+    def scale(self, in_density: Density, out_density: Density, filename: str) -> str:
         out_path = self._generate_out_path(filename, out_density)
         drawable_dir = os.path.dirname(out_path)
         self._create_dir(drawable_dir)
@@ -62,3 +62,5 @@ class ImageProcessor:
 
         out_image = image.resize((width, height), Image.BICUBIC)
         out_image.save(out_path)
+
+        return out_path

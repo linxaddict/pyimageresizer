@@ -117,5 +117,7 @@ class MainPresenter:
     def set_image(self, file_name: str) -> None:
         self.file_name = file_name
 
-        for d in self._get_selected_densities():
-            self._image_processor.scale(self.density, d, self.file_name)
+    def scale_selected_file(self) -> None:
+        if self.file_name:
+            for d in self._get_selected_densities():
+                self._image_processor.scale(self.density, d, self.file_name)

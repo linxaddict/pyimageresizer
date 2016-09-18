@@ -203,16 +203,22 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage">
+          <object class="GtkImage" id="imgv_preview">
+            <property name="width_request">-1</property>
+            <property name="height_request">-1</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin_left">40</property>
+            <property name="margin_right">40</property>
+            <property name="margin_top">40</property>
+            <property name="margin_bottom">40</property>
             <property name="pixbuf">img/ic_image.png</property>
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="fill">False</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -232,7 +238,46 @@
             <property name="create_folders">False</property>
             <property name="filter">image_file_filter</property>
             <property name="title" translatable="yes"/>
+            <signal name="file-set" handler="on_file_chosen" swapped="no"/>
           </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_scale">
+            <property name="label" translatable="yes">Scale</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_scale_selected_file" swapped="no"/>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMessageDialog" id="dialog_image_error">
+    <property name="can_focus">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="transient_for">window_main</property>
+    <property name="buttons">ok</property>
+    <property name="text" translatable="yes">Image error</property>
+    <property name="secondary_text" translatable="yes">Unable to scale selected image. Make sure that the file exists and you have required permissions.</property>
+    <signal name="close" handler="on_dialog_closed" swapped="no"/>
+    <signal name="response" handler="on_dialog_closed" swapped="no"/>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
         </child>
       </object>
     </child>

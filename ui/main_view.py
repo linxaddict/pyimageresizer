@@ -2,6 +2,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+from gi.repository import GdkPixbuf
 from model import Density
 
 __author__ = 'Marcin Przepiórkowski'
@@ -10,32 +11,22 @@ __email__ = 'mprzepiorkowski@gmail.com'
 
 class MainWindow:
 
-    def _find_window(self, builder: Gtk.Builder) -> Gtk.Window:
-        return builder.get_object('window_main')
+    def _find_views(self, builder: Gtk.Builder) -> None:
+        self.window = builder.get_object('window_main')
 
-    def _find_density_list_store(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('density_list_store')
+        self.density_list_store = builder.get_object('density_list_store')
+        self.cbox_density = builder.get_object('cbox_density')
 
-    def _find_density_cbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('cbox_density')
+        self.chbox_xxxhdpi = builder.get_object('chbox_xxxhdpi')
+        self.chbox_xxhdpi = builder.get_object('chbox_xxhdpi')
+        self.chbox_xhdpi = builder.get_object('chbox_xhdpi')
+        self.chbox_hdpi = builder.get_object('chbox_hdpi')
+        self.chbox_mdpi = builder.get_object('chbox_mdpi')
+        self.chbox_ldpi = builder.get_object('chbox_ldpi')
 
-    def _find_xxxhdpi_chbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('chbox_xxxhdpi')
+        self.imgv_preview = builder.get_object('imgv_preview')
 
-    def _find_xxhdpi_chbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('chbox_xxhdpi')
-
-    def _find_xhdpi_chbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('chbox_xhdpi')
-
-    def _find_hdpi_chbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('chbox_hdpi')
-
-    def _find_mdpi_chbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('chbox_mdpi')
-
-    def _find_ldpi_chbox(self, builder: Gtk.Builder) -> Gtk.CheckButton:
-        return builder.get_object('chbox_ldpi')
+        self.dialog_image_error = builder.get_object('dialog_image_error')
 
     def _append_densities(self, list_store: Gtk.ListStore, densities: [str]):
         for density in densities:
@@ -56,16 +47,7 @@ class MainWindow:
         gtk_builder.add_from_file(view_resource)
         gtk_builder.connect_signals(self)
 
-        self.window = self._find_window(gtk_builder)
-        self.density_list_store = self._find_density_list_store(gtk_builder)
-        self.cbox_density = self._find_density_cbox(gtk_builder)
-
-        self.chbox_xxxhdpi = self._find_xxxhdpi_chbox(gtk_builder)
-        self.chbox_xxhdpi = self._find_xxhdpi_chbox(gtk_builder)
-        self.chbox_xhdpi = self._find_xhdpi_chbox(gtk_builder)
-        self.chbox_hdpi = self._find_hdpi_chbox(gtk_builder)
-        self.chbox_mdpi = self._find_mdpi_chbox(gtk_builder)
-        self.chbox_ldpi = self._find_ldpi_chbox(gtk_builder)
+        self._find_views(gtk_builder)
 
     def set_presenter(self, presenter) -> None:
         self.presenter = presenter
@@ -111,7 +93,17 @@ class MainWindow:
             self.presenter.density = Density(name[0])
 
     def on_file_chosen(self, widget):
-        self.presenter.set_image(widget.get_filename())
+        filename = widget.get_filename()
+
+        self.presenter.set_image(filename)
+        self.imgv_preview.set_from_file(widget.get_filename())
+
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename, width=220, height=220,
+                                                 preserve_aspect_ratio=True)
+        self.imgv_preview.set_from_pixbuf(pixbuf)
+
+    def on_dialog_closed(self, widget, response_id):
+        self.dialog_image_error.hide()
 
     def toggle_xxxhdpi(self, toggled: bool) -> None:
         self.chbox_xxxhdpi.set_active(toggled)
@@ -130,3 +122,9 @@ class MainWindow:
 
     def toggle_ldpi(self, toggled: bool) -> None:
         self.chbox_ldpi.set_active(toggled)
+
+    def show_image_error_dialog(self):
+        self.dialog_image_error.run()
+
+    def on_scale_selected_file(self, widget):
+        self.presenter.scale_selected_file()
