@@ -10,6 +10,8 @@ __email__ = 'mprzepiorkowski@gmail.com'
 
 
 class MainWindow:
+    IMAGE_WIDTH = 250
+    IMAGE_HEIGHT = 250
 
     def _find_views(self, builder: Gtk.Builder) -> None:
         self.window = builder.get_object('window_main')
@@ -25,6 +27,7 @@ class MainWindow:
         self.chbox_ldpi = builder.get_object('chbox_ldpi')
 
         self.imgv_preview = builder.get_object('imgv_preview')
+        self.btn_scale = builder.get_object('btn_scale')
 
         self.dialog_image_error = builder.get_object('dialog_image_error')
 
@@ -83,6 +86,9 @@ class MainWindow:
         if self.presenter.ldpi != widget.get_active():
             self.presenter.ldpi = widget.get_active()
 
+    def on_scale_button_sensitivity_changed(self, sensitive: bool) -> None:
+        self.btn_scale.set_sensitive(sensitive)
+
     def on_density_cbox_changed(self, widget: Gtk.Widget) -> None:
         tree_iter = widget.get_active_iter()
 
@@ -96,11 +102,14 @@ class MainWindow:
         filename = widget.get_filename()
 
         self.presenter.set_image(filename)
-        self.imgv_preview.set_from_file(widget.get_filename())
 
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename, width=220, height=220,
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename,
+                                                         width=MainWindow.IMAGE_WIDTH,
+                                                         height=MainWindow.IMAGE_HEIGHT,
                                                  preserve_aspect_ratio=True)
         self.imgv_preview.set_from_pixbuf(pixbuf)
+
+        self.on_scale_button_sensitivity_changed(True)
 
     def on_dialog_closed(self, widget, response_id):
         self.dialog_image_error.hide()

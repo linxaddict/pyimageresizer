@@ -119,5 +119,8 @@ class MainPresenter:
 
     def scale_selected_file(self) -> None:
         if self.file_name:
-            for d in self._get_selected_densities():
-                self._image_processor.scale(self.density, d, self.file_name)
+            try:
+                for d in self._get_selected_densities():
+                    self._image_processor.scale(self.density, d, self.file_name)
+            except IOError:
+                self.main_view.show_image_error_dialog()
