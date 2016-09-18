@@ -125,8 +125,14 @@ class MainPresenter:
 
     def set_image(self, filename: str) -> None:
         self.file_name = filename
-        self.main_view.set_filename(os.path.basename(filename))
-        self.main_view.set_image_info(self._generate_image_info(filename))
+
+        try:
+            self.main_view.set_filename(os.path.basename(filename))
+            self.main_view.set_image_info(self._generate_image_info(filename))
+        except IOError:
+                self.main_view.show_image_error_dialog()
+        except OSError:
+            self.main_view.show_image_error_dialog()
 
     def scale_selected_file(self) -> None:
         if self.file_name:
@@ -134,4 +140,6 @@ class MainPresenter:
                 for d in self._get_selected_densities():
                     self._image_processor.scale(self.density, d, self.file_name)
             except IOError:
+                self.main_view.show_image_error_dialog()
+            except OSError:
                 self.main_view.show_image_error_dialog()

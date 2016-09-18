@@ -3,6 +3,7 @@ gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
 from gi.repository import GdkPixbuf
+from gi.repository import Gdk
 from model import Density
 
 __author__ = 'Marcin Przepiórkowski'
@@ -34,9 +35,25 @@ class MainWindow:
         self.label_filename = builder.get_object('label_filename')
         self.label_image_info = builder.get_object('label_image_info')
 
+        self.box_image_container = builder.get_object('box_image_container')
+
     def _append_densities(self, list_store: Gtk.ListStore, densities: [str]):
         for density in densities:
             list_store.append(density)
+
+    def _parse_uri(self, uri: str) -> str:
+        path = ""
+
+        if uri.startswith('file:\\\\\\'): # windows
+            path = uri[8:] # 8 is len('file:///')
+        elif uri.startswith('file://'): # nautilus, rox
+            path = uri[7:] # 7 is len('file://')
+        elif uri.startswith('file:'): # xffm
+            path = uri[5:] # 5 is len('file:')
+
+        path = path.strip('\r\n\x00') # remove \r\n and NULL
+
+        return path
 
     def _initialize_views_state(self, presenter) -> None:
         self.chbox_xxxhdpi.set_active(presenter.xxxhdpi)
@@ -49,11 +66,26 @@ class MainWindow:
         self._append_densities(self.density_list_store, presenter.generate_densities())
         self.cbox_density.set_active(0)
 
+    def _choose_file(self, filename):
+        self.presenter.set_image(filename)
+
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename,
+                                                         width=MainWindow.IMAGE_WIDTH,
+                                                         height=MainWindow.IMAGE_HEIGHT,
+                                                 preserve_aspect_ratio=True)
+        self.imgv_preview.set_from_pixbuf(pixbuf)
+
+        self.on_scale_button_sensitivity_changed(True)
+
     def __init__(self, view_resource: str, gtk_builder: Gtk.Builder):
         gtk_builder.add_from_file(view_resource)
         gtk_builder.connect_signals(self)
 
         self._find_views(gtk_builder)
+
+        self.box_image_container.drag_dest_set(Gtk.DestDefaults.MOTION |
+                  Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP,
+                  [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
 
     def set_presenter(self, presenter) -> None:
         self.presenter = presenter
@@ -103,19 +135,16 @@ class MainWindow:
 
     def on_file_chosen(self, widget):
         filename = widget.get_filename()
-
-        self.presenter.set_image(filename)
-
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename,
-                                                         width=MainWindow.IMAGE_WIDTH,
-                                                         height=MainWindow.IMAGE_HEIGHT,
-                                                 preserve_aspect_ratio=True)
-        self.imgv_preview.set_from_pixbuf(pixbuf)
-
-        self.on_scale_button_sensitivity_changed(True)
+        self._choose_file(filename)
 
     def on_dialog_closed(self, widget, response_id):
         self.dialog_image_error.hide()
+
+    def on_drag_data_received(self, widget, context, x, y, selection, target_type, timestamp):
+        uri = selection.get_data().decode('UTF-8')
+        path = self._parse_uri(uri)
+
+        self._choose_file(path)
 
     def toggle_xxxhdpi(self, toggled: bool) -> None:
         self.chbox_xxxhdpi.set_active(toggled)
