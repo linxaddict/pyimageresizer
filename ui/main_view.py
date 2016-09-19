@@ -1,4 +1,5 @@
 import gi
+
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
@@ -37,21 +38,23 @@ class MainWindow:
 
         self.box_image_container = builder.get_object('box_image_container')
 
-    def _append_densities(self, list_store: Gtk.ListStore, densities: [str]):
+    @staticmethod
+    def _append_densities(list_store: Gtk.ListStore, densities: [str]):
         for density in densities:
             list_store.append(density)
 
-    def _parse_uri(self, uri: str) -> str:
+    @staticmethod
+    def _parse_uri(uri: str) -> str:
         path = ""
 
-        if uri.startswith('file:\\\\\\'): # windows
-            path = uri[8:] # 8 is len('file:///')
-        elif uri.startswith('file://'): # nautilus, rox
-            path = uri[7:] # 7 is len('file://')
-        elif uri.startswith('file:'): # xffm
-            path = uri[5:] # 5 is len('file:')
+        if uri.startswith('file:\\\\\\'):  # windows
+            path = uri[8:]  # 8 is len('file:///')
+        elif uri.startswith('file://'):  # nautilus, rox
+            path = uri[7:]  # 7 is len('file://')
+        elif uri.startswith('file:'):  # xffm
+            path = uri[5:]  # 5 is len('file:')
 
-        path = path.strip('\r\n\x00') # remove \r\n and NULL
+        path = path.strip('\r\n\x00')  # remove \r\n and NULL
 
         return path
 
@@ -72,7 +75,7 @@ class MainWindow:
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename,
                                                          width=MainWindow.IMAGE_WIDTH,
                                                          height=MainWindow.IMAGE_HEIGHT,
-                                                 preserve_aspect_ratio=True)
+                                                         preserve_aspect_ratio=True)
         self.imgv_preview.set_from_pixbuf(pixbuf)
 
         self.on_scale_button_sensitivity_changed(True)
@@ -84,8 +87,10 @@ class MainWindow:
         self._find_views(gtk_builder)
 
         self.box_image_container.drag_dest_set(Gtk.DestDefaults.MOTION |
-                  Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP,
-                  [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
+                                               Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP,
+                                               [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
+
+        self.presenter = None
 
     def set_presenter(self, presenter) -> None:
         self.presenter = presenter
@@ -94,6 +99,7 @@ class MainWindow:
     def show(self) -> None:
         self.window.show_all()
 
+    # noinspection PyUnusedLocal
     def on_delete_window(self, widget: Gtk.Widget, data) -> None:
         Gtk.main_quit()
 
@@ -127,7 +133,7 @@ class MainWindow:
     def on_density_cbox_changed(self, widget: Gtk.Widget) -> None:
         tree_iter = widget.get_active_iter()
 
-        if tree_iter != None:
+        if tree_iter is not None:
             model = widget.get_model()
             name = model[tree_iter][:1]
 
@@ -137,9 +143,11 @@ class MainWindow:
         filename = widget.get_filename()
         self._choose_file(filename)
 
+    # noinspection PyUnusedLocal
     def on_dialog_closed(self, widget, response_id):
         self.dialog_image_error.hide()
 
+    # noinspection PyUnusedLocal
     def on_drag_data_received(self, widget, context, x, y, selection, target_type, timestamp):
         uri = selection.get_data().decode('UTF-8')
         path = self._parse_uri(uri)
@@ -167,6 +175,7 @@ class MainWindow:
     def show_image_error_dialog(self):
         self.dialog_image_error.run()
 
+    # noinspection PyUnusedLocal
     def on_scale_selected_file(self, widget):
         self.presenter.scale_selected_file()
 

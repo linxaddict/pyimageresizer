@@ -50,10 +50,12 @@ class MainPresenter:
         self._ldpi = False
 
         self._density = Density.xxxhdpi
-
         self._image_processor = image_processor
 
-    def generate_densities(self) -> [str]:
+        self.file_name = None
+
+    @staticmethod
+    def generate_densities() -> [str]:
         d = []
 
         for density in Density:
@@ -131,8 +133,6 @@ class MainPresenter:
             self.main_view.set_image_info(self._generate_image_info(filename))
         except IOError:
                 self.main_view.show_image_error_dialog()
-        except OSError:
-            self.main_view.show_image_error_dialog()
 
     def scale_selected_file(self) -> None:
         if self.file_name:
@@ -140,6 +140,4 @@ class MainPresenter:
                 for d in self._get_selected_densities():
                     self._image_processor.scale(self.density, d, self.file_name)
             except IOError:
-                self.main_view.show_image_error_dialog()
-            except OSError:
                 self.main_view.show_image_error_dialog()

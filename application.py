@@ -1,11 +1,10 @@
 import gi
+
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-
 from ui import MainWindow
 from ui import MainPresenter
-
 from image import ImageProcessor
 
 __author__ = 'Marcin Przepiórkowski'
@@ -13,7 +12,6 @@ __email__ = 'mprzepiorkowski@gmail.com'
 
 
 class Application:
-
     def run(self) -> None:
         gtk_builder = Gtk.Builder()
         image_processor = ImageProcessor()
@@ -25,6 +23,7 @@ class Application:
         main_window.show()
 
         Gtk.main()
+
 
 if __name__ == '__main__':
     app = Application()

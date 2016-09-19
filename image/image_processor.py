@@ -3,6 +3,10 @@ import os
 from model import Density
 from PIL import Image
 
+__author__ = 'Marcin Przepiórkowski'
+__email__ = 'mprzepiorkowski@gmail.com'
+
+
 class ImageProcessor:
     DRAWABLE_XXXHDPI = 'drawable-xxxhdpi'
     DRAWABLE_XXHDPI = 'drawable-xxhdpi'
@@ -11,11 +15,12 @@ class ImageProcessor:
     DRAWABLE_MDPI = 'drawable-mdpi'
     DRAWABLE_LDPI = 'drawable-ldpi'
 
-    def _create_dir(self, dir_name: str):
+    @staticmethod
+    def _create_dir(dir_name: str):
         if not os.path.exists(dir_name):
             os.makedirs(dir_name)
 
-    def _generate_out_path(self, filename:str, density: Density) -> str:
+    def _generate_out_path(self, filename: str, density: Density) -> str:
         dirname = os.path.dirname(filename)
         drawable_dir = self._density_to_dir_map[density]
         basename = os.path.basename(filename)
@@ -57,22 +62,25 @@ class ImageProcessor:
 
         multiplier = out_density_multiplier / in_density_multiplier
 
-        width = (int) (size[0] * multiplier)
-        height = (int) (size[1] * multiplier)
+        width = int(size[0] * multiplier)
+        height = int(size[1] * multiplier)
 
         out_image = image.resize((width, height), Image.BICUBIC)
         out_image.save(out_path)
 
         return out_path
 
-    def image_size(self, filename: str) -> (int, int):
+    @staticmethod
+    def image_size(filename: str) -> (int, int):
         image = Image.open(filename)
         return image.size
 
-    def image_format(self, filename: str) -> str:
+    @staticmethod
+    def image_format(filename: str) -> str:
         image = Image.open(filename)
         return image.format
 
-    def image_mode(self, filename: str) -> str:
+    @staticmethod
+    def image_mode(filename: str) -> str:
         image = Image.open(filename)
         return image.mode
