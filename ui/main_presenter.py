@@ -183,5 +183,9 @@ class MainPresenter:
 
     def clear(self):
         self._loaded_files.clear()
+
         self.main_view.on_clear_button_sensitivity_changed(False)
         self.main_view.on_scale_button_sensitivity_changed(False)
+        self.main_view.show_image_placeholder()
+        self.main_view.hide_images_list()
+        self.main_view.load_default_placeholder()

@@ -214,3 +214,6 @@ class MainWindow:
 
     def hide_images_list(self):
         self.treev_images.set_visible(False)
+
+    def load_default_placeholder(self):
+        self.imgv_preview.set_from_file('res/img/ic_image.png')
