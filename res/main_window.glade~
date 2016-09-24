@@ -258,6 +258,7 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="model">images_list_store</property>
+                    <property name="headers_clickable">False</property>
                     <property name="enable_grid_lines">both</property>
                     <child internal-child="selection">
                       <object class="GtkTreeSelection"/>

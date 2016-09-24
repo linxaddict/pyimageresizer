@@ -5,6 +5,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 from gi.repository import Gdk
+from gi.repository import GLib
 from model import Density
 
 __author__ = 'Marcin Przepiórkowski'
@@ -162,10 +163,13 @@ class MainWindow:
     def on_drag_data_received(self, widget, context, x, y, selection, target_type, timestamp):
         data = selection.get_data().decode('UTF-8')
 
-        for uri in data.split('\n'):
-            if uri.strip():
-                path = self._parse_uri(uri)
-                self._choose_file(path)
+        try:
+            for uri in data.split('\n'):
+                if uri.strip():
+                    path = self._parse_uri(uri)
+                    self._choose_file(path)
+        except GLib.Error:
+            self.show_image_error_dialog()
 
     def toggle_xxxhdpi(self, toggled: bool) -> None:
         self.chbox_xxxhdpi.set_active(toggled)

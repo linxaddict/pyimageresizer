@@ -372,7 +372,7 @@
     <property name="transient_for">window_main</property>
     <property name="buttons">ok</property>
     <property name="text" translatable="yes">Image error</property>
-    <property name="secondary_text" translatable="yes">Unable to scale selected image. Make sure that the file exists and you have required permissions.</property>
+    <property name="secondary_text" translatable="yes">Unable to open selected image. Make sure that the file exists and you have required permissions.</property>
     <signal name="close" handler="on_dialog_closed" swapped="no"/>
     <signal name="response" handler="on_dialog_closed" swapped="no"/>
     <child internal-child="vbox">
