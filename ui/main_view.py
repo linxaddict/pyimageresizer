@@ -34,6 +34,7 @@ class MainWindow:
 
         self.imgv_preview = builder.get_object('imgv_preview')
         self.btn_scale = builder.get_object('btn_scale')
+        self.btn_clear = builder.get_object('btn_clear')
 
         self.dialog_image_error = builder.get_object('dialog_image_error')
 
@@ -88,7 +89,6 @@ class MainWindow:
     def _choose_file(self, filename):
         if self.presenter.add_image(filename):
             self.imgv_preview.set_from_pixbuf(self._generate_preview(filename))
-            self.on_scale_button_sensitivity_changed(True)
 
             thumbnail = self._generate_thumbnail(filename)
             size, name, img_format, mode = self.presenter.get_image_info(filename)
@@ -141,6 +141,9 @@ class MainWindow:
 
     def on_scale_button_sensitivity_changed(self, sensitive: bool) -> None:
         self.btn_scale.set_sensitive(sensitive)
+
+    def on_clear_button_sensitivity_changed(self, sensitive: bool) -> None:
+        self.btn_clear.set_sensitive(sensitive)
 
     def on_density_cbox_changed(self, widget: Gtk.Widget) -> None:
         tree_iter = widget.get_active_iter()
@@ -195,6 +198,10 @@ class MainWindow:
     # noinspection PyUnusedLocal
     def on_scale_selected_file(self, widget):
         self.presenter.scale_selected_files()
+
+    def on_clear(self, widget):
+        self.treev_model.clear()
+        self.presenter.clear()
 
     def show_image_placeholder(self):
         self.imgv_preview.set_visible(True)

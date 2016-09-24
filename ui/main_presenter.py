@@ -159,6 +159,9 @@ class MainPresenter:
                 self.main_view.hide_image_placeholder()
                 self.main_view.show_images_list()
 
+            self.main_view.on_scale_button_sensitivity_changed(True)
+            self.main_view.on_clear_button_sensitivity_changed(True)
+
             return True
 
         return False
@@ -169,8 +172,16 @@ class MainPresenter:
         if len(self._loaded_files) > 1:
             self.main_view.show_image_placeholer()
             self.main_view.hide_images_list()
+        elif not self._loaded_files:
+            self.main_view.on_clear_button_sensitivity_changed(False)
+            self.main_view.on_scale_button_sensitivity_changed(False)
 
     def scale_selected_files(self) -> None:
         thread = threading.Thread(target=self._scale)
         thread.daemon = True
         thread.start()
+
+    def clear(self):
+        self._loaded_files.clear()
+        self.main_view.on_clear_button_sensitivity_changed(False)
+        self.main_view.on_scale_button_sensitivity_changed(False)
