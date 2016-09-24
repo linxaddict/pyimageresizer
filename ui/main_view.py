@@ -15,6 +15,9 @@ class MainWindow:
     IMAGE_WIDTH = 250
     IMAGE_HEIGHT = 250
 
+    THUMBNAIL_WIDTH = 45
+    THUMBNAIL_HEIGHT = 45
+
     def _find_views(self, builder: Gtk.Builder) -> None:
         self.window = builder.get_object('window_main')
 
@@ -33,10 +36,12 @@ class MainWindow:
 
         self.dialog_image_error = builder.get_object('dialog_image_error')
 
-        self.label_filename = builder.get_object('label_filename')
-        self.label_image_info = builder.get_object('label_image_info')
-
         self.box_image_container = builder.get_object('box_image_container')
+
+        self.treev_model = builder.get_object('images_list_store')
+        self.treev_images = builder.get_object('tree_view_images')
+
+        self.overlay = builder.get_object('overlay')
 
     @staticmethod
     def _append_densities(list_store: Gtk.ListStore, densities: [str]):
@@ -69,39 +74,45 @@ class MainWindow:
         self._append_densities(self.density_list_store, presenter.generate_densities())
         self.cbox_density.set_active(0)
 
+    @staticmethod
+    def _generate_preview(filename: str) -> GdkPixbuf.Pixbuf:
+        return GdkPixbuf.Pixbuf.new_from_file_at_scale(filename, width=MainWindow.IMAGE_WIDTH,
+                                                       height=MainWindow.IMAGE_HEIGHT, preserve_aspect_ratio=True)
+
+    @staticmethod
+    def _generate_thumbnail(filename: str) -> GdkPixbuf.Pixbuf:
+        return GdkPixbuf.Pixbuf.new_from_file_at_scale(filename, width=MainWindow.THUMBNAIL_WIDTH,
+                                                       height=MainWindow.THUMBNAIL_HEIGHT, preserve_aspect_ratio=True)
+
     def _choose_file(self, filename):
-        self.presenter.set_image(filename)
+        if self.presenter.add_image(filename):
+            self.imgv_preview.set_from_pixbuf(self._generate_preview(filename))
+            self.on_scale_button_sensitivity_changed(True)
 
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filename,
-                                                         width=MainWindow.IMAGE_WIDTH,
-                                                         height=MainWindow.IMAGE_HEIGHT,
-                                                         preserve_aspect_ratio=True)
-        self.imgv_preview.set_from_pixbuf(pixbuf)
+            thumbnail = self._generate_thumbnail(filename)
+            size, name, img_format, mode = self.presenter.get_image_info(filename)
 
-        self.on_scale_button_sensitivity_changed(True)
+            self.treev_model.append([thumbnail, name, '%d x %d' % (size[0], size[1]), img_format])
 
-    def __init__(self, view_resource: str, gtk_builder: Gtk.Builder):
+    def __init__(self, view_resource: str, gtk_builder: Gtk.Builder, application: Gtk.Application):
         gtk_builder.add_from_file(view_resource)
         gtk_builder.connect_signals(self)
 
         self._find_views(gtk_builder)
 
-        self.box_image_container.drag_dest_set(Gtk.DestDefaults.MOTION |
-                                               Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP,
-                                               [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
+        self.overlay.drag_dest_set(Gtk.DestDefaults.MOTION |
+                                   Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP,
+                                   [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
 
         self.presenter = None
+        self.window.set_application(application)
 
     def set_presenter(self, presenter) -> None:
         self.presenter = presenter
         self._initialize_views_state(presenter)
 
     def show(self) -> None:
-        self.window.show_all()
-
-    # noinspection PyUnusedLocal
-    def on_delete_window(self, widget: Gtk.Widget, data) -> None:
-        Gtk.main_quit()
+        self.window.present()
 
     def on_xxxhdpi_toggled(self, widget: Gtk.Widget) -> None:
         if self.presenter.xxxhdpi != widget.get_active():
@@ -177,10 +188,16 @@ class MainWindow:
 
     # noinspection PyUnusedLocal
     def on_scale_selected_file(self, widget):
-        self.presenter.scale_selected_file()
+        self.presenter.scale_selected_files()
 
-    def set_filename(self, filename: str) -> None:
-        self.label_filename.set_text(filename)
+    def show_image_placeholder(self):
+        self.imgv_preview.set_visible(True)
 
-    def set_image_info(self, image_info: str) -> None:
-        self.label_image_info.set_text(image_info)
+    def hide_image_placeholder(self):
+        self.imgv_preview.set_visible(False)
+
+    def show_images_list(self):
+        self.treev_images.set_visible(True)
+
+    def hide_images_list(self):
+        self.treev_images.set_visible(False)

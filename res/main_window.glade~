@@ -14,17 +14,29 @@
       <mime-type>image/jpg</mime-type>
     </mime-types>
   </object>
+  <object class="GtkListStore" id="images_list_store">
+    <columns>
+      <!-- column-name image -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+      <!-- column-name size -->
+      <column type="gchararray"/>
+      <!-- column-name format -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkApplicationWindow" id="window_main">
     <property name="width_request">750</property>
     <property name="height_request">550</property>
     <property name="can_focus">False</property>
-    <signal name="delete-event" handler="on_delete_window" swapped="no"/>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="hexpand">False</property>
         <property name="vexpand">False</property>
+        <signal name="drag-data-received" handler="on_drag_data_received" swapped="no"/>
         <child>
           <object class="GtkGrid">
             <property name="width_request">200</property>
@@ -203,68 +215,117 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox">
+          <object class="GtkOverlay" id="overlay">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
             <signal name="drag-data-received" handler="on_drag_data_received" swapped="no"/>
             <child>
-              <object class="GtkImage" id="imgv_preview">
-                <property name="width_request">-1</property>
-                <property name="height_request">-1</property>
+              <object class="GtkBox" id="box_image_container">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="pixbuf">img/ic_image.png</property>
+                <property name="orientation">vertical</property>
+                <signal name="drag-data-received" handler="on_drag_data_received" swapped="no"/>
+                <child>
+                  <object class="GtkImage" id="imgv_preview">
+                    <property name="width_request">-1</property>
+                    <property name="height_request">-1</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="pixbuf">img/ic_image.png</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="index">-1</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkLabel" id="label_filename">
+            <child type="overlay">
+              <object class="GtkScrolledWindow">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">6</property>
-                <property name="margin_right">6</property>
-                <property name="margin_top">6</property>
-                <property name="margin_bottom">6</property>
-                <attributes>
-                  <attribute name="font-desc" value="&lt;Tutaj należy wprowadzić wartość&gt; 16"/>
-                  <attribute name="weight" value="medium"/>
-                  <attribute name="scale" value="1"/>
-                  <attribute name="foreground" value="#ffffffffffff"/>
-                </attributes>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkTreeView" id="tree_view_images">
+                    <property name="name">treeview_images</property>
+                    <property name="can_focus">True</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
+                    <property name="model">images_list_store</property>
+                    <property name="rules_hint">True</property>
+                    <property name="fixed_height_mode">True</property>
+                    <property name="enable_grid_lines">both</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection"/>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="col_image">
+                        <property name="sizing">fixed</property>
+                        <property name="min_width">80</property>
+                        <property name="title" translatable="yes">Image</property>
+                        <child>
+                          <object class="GtkCellRendererPixbuf" id="renderer_image"/>
+                          <attributes>
+                            <attribute name="pixbuf">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="col_name">
+                        <property name="min_width">100</property>
+                        <property name="title" translatable="yes">Name</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer_name"/>
+                          <attributes>
+                            <attribute name="text">1</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="col_size">
+                        <property name="resizable">True</property>
+                        <property name="sizing">autosize</property>
+                        <property name="fixed_width">120</property>
+                        <property name="title" translatable="yes">Size</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer_size"/>
+                          <attributes>
+                            <attribute name="text">2</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkTreeViewColumn" id="col_format">
+                        <property name="title" translatable="yes">Format</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="renderer_format"/>
+                          <attributes>
+                            <attribute name="text">3</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label_image_info">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">6</property>
-                <property name="margin_right">6</property>
-                <property name="margin_top">6</property>
-                <property name="margin_bottom">24</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="index">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>

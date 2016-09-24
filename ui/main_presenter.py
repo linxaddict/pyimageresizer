@@ -1,7 +1,7 @@
 import os
 
-from model import Density
 from image import ImageProcessor
+from model import Density
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -32,13 +32,6 @@ class MainPresenter:
 
         return densities
 
-    def _generate_image_info(self, filename) -> str:
-        size = self._image_processor.image_size(filename)
-        img_format = self._image_processor.image_format(filename)
-        mode = self._image_processor.image_mode(filename)
-
-        return '%d x %d, %s, %s' % (size[0], size[1], img_format, mode)
-
     def __init__(self, main_view, image_processor: ImageProcessor):
         self.main_view = main_view
 
@@ -52,7 +45,17 @@ class MainPresenter:
         self._density = Density.xxxhdpi
         self._image_processor = image_processor
 
-        self.file_name = None
+        self._loaded_files = []
+
+    def get_image_info(self, filename) -> ((int, int), str, str, str):
+        size = self._image_processor.image_size(filename)
+        name = os.path.basename(filename)
+        img_format = self._image_processor.image_format(filename)
+        mode = self._image_processor.image_mode(filename)
+
+        img_name, _ = os.path.splitext(name)
+
+        return size, img_name, img_format, mode
 
     @staticmethod
     def generate_densities() -> [str]:
@@ -125,19 +128,34 @@ class MainPresenter:
     def density(self, value: Density) -> None:
         self._density = value
 
-    def set_image(self, filename: str) -> None:
-        self.file_name = filename
+    def add_image(self, filename: str) -> bool:
+        if filename not in self._loaded_files:
+            self._loaded_files.append(filename)
 
-        try:
-            self.main_view.set_filename(os.path.basename(filename))
-            self.main_view.set_image_info(self._generate_image_info(filename))
-        except IOError:
-                self.main_view.show_image_error_dialog()
+            if len(self._loaded_files) > 1:
+                self.main_view.hide_image_placeholder()
+                self.main_view.show_images_list()
 
-    def scale_selected_file(self) -> None:
-        if self.file_name:
+            return True
+
+        return False
+
+    def remove_image(self, filename: str) -> None:
+        self._loaded_files.remove(filename)
+
+        if len(self._loaded_files) > 1:
+            self.main_view.show_image_placeholer()
+            self.main_view.hide_images_list()
+
+    def scale_selected_files(self) -> None:
+        error_occurred = False
+
+        for file in self._loaded_files:
             try:
                 for d in self._get_selected_densities():
-                    self._image_processor.scale(self.density, d, self.file_name)
+                    self._image_processor.scale(self.density, d, file)
             except IOError:
-                self.main_view.show_image_error_dialog()
+                error_occurred = True
+
+        if error_occurred:
+            self.main_view.show_image_error_dialog()
