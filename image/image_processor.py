@@ -49,24 +49,26 @@ class ImageProcessor:
             Density.ldpi: 0.75
         }
 
-    def scale(self, in_density: Density, out_density: Density, filename: str) -> str:
+    def scale(self, in_density: Density, out_density: Density, filename: str, override_existing: bool) -> str:
         out_path = self._generate_out_path(filename, out_density)
-        drawable_dir = os.path.dirname(out_path)
-        self._create_dir(drawable_dir)
 
-        image = Image.open(filename)
-        size = image.size
+        if not os.path.exists(out_path) or override_existing:
+            drawable_dir = os.path.dirname(out_path)
+            self._create_dir(drawable_dir)
 
-        in_density_multiplier = self._density_to_multiplier_map[in_density]
-        out_density_multiplier = self._density_to_multiplier_map[out_density]
+            image = Image.open(filename)
+            size = image.size
 
-        multiplier = out_density_multiplier / in_density_multiplier
+            in_density_multiplier = self._density_to_multiplier_map[in_density]
+            out_density_multiplier = self._density_to_multiplier_map[out_density]
 
-        width = int(size[0] * multiplier)
-        height = int(size[1] * multiplier)
+            multiplier = out_density_multiplier / in_density_multiplier
 
-        out_image = image.resize((width, height), Image.BICUBIC)
-        out_image.save(out_path)
+            width = int(size[0] * multiplier)
+            height = int(size[1] * multiplier)
+
+            out_image = image.resize((width, height), Image.BICUBIC)
+            out_image.save(out_path)
 
         return out_path
 

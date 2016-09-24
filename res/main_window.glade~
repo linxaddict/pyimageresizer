@@ -14,49 +14,6 @@
       <mime-type>image/jpg</mime-type>
     </mime-types>
   </object>
-  <object class="GtkHeaderBar">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="title">PyImageResizer</property>
-    <property name="subtitle">Image resizer for Android</property>
-    <property name="show_close_button">True</property>
-    <child>
-      <object class="GtkFileChooserButton">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="create_folders">False</property>
-        <property name="filter">image_file_filter</property>
-        <property name="title" translatable="yes"/>
-        <signal name="file-set" handler="on_file_chosen" swapped="no"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkButton" id="btn_scale">
-        <property name="label" translatable="yes">Scale</property>
-        <property name="visible">True</property>
-        <property name="sensitive">False</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <signal name="clicked" handler="on_scale_selected_file" swapped="no"/>
-      </object>
-      <packing>
-        <property name="pack_type">end</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkButton" id="btn_clear">
-        <property name="label" translatable="yes">Clear</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-      </object>
-      <packing>
-        <property name="pack_type">end</property>
-        <property name="position">2</property>
-      </packing>
-    </child>
-  </object>
   <object class="GtkListStore" id="images_list_store">
     <columns>
       <!-- column-name image -->
@@ -235,26 +192,26 @@
                 <property name="top_attach">8</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkCheckButton" id="chbox_override_existing_files">
+                <property name="label" translatable="yes"> Overeride existing files</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="valign">end</property>
+                <property name="vexpand">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">9</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_top">8</property>
-            <property name="margin_bottom">8</property>
-            <property name="vexpand">False</property>
-            <property name="orientation">vertical</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
           </packing>
         </child>
         <child>
@@ -376,7 +333,51 @@
       </object>
     </child>
     <child type="titlebar">
-      <placeholder/>
+      <object class="GtkHeaderBar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="title">PyImageResizer</property>
+        <property name="subtitle">Image resizer for Android</property>
+        <property name="show_close_button">True</property>
+        <child>
+          <object class="GtkFileChooserButton">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="create_folders">False</property>
+            <property name="filter">image_file_filter</property>
+            <property name="title" translatable="yes"/>
+            <signal name="file-set" handler="on_file_chosen" swapped="no"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_scale">
+            <property name="label" translatable="yes">Scale</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_scale_selected_file" swapped="no"/>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_clear">
+            <property name="label" translatable="yes">Clear</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="on_clear" swapped="no"/>
+          </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
     </child>
   </object>
   <object class="GtkMessageDialog" id="dialog_image_error">

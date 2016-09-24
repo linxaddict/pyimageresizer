@@ -46,7 +46,7 @@ class MainPresenter:
         for file in self._loaded_files:
             try:
                 for d in self._get_selected_densities():
-                    self._image_processor.scale(self.density, d, file)
+                    self._image_processor.scale(self.density, d, file, self.override_existing_files)
             except IOError:
                 error_occurred = True
 
@@ -64,6 +64,8 @@ class MainPresenter:
         self._hdpi = False
         self._mdpi = False
         self._ldpi = False
+
+        self._override_existing_files = False
 
         self._density = Density.xxxhdpi
         self._image_processor = image_processor
@@ -150,6 +152,14 @@ class MainPresenter:
     @density.setter
     def density(self, value: Density) -> None:
         self._density = value
+
+    @property
+    def override_existing_files(self) -> bool:
+        return self._override_existing_files
+
+    @override_existing_files.setter
+    def override_existing_files(self, value) -> None:
+        self._override_existing_files = value
 
     def add_image(self, filename: str) -> bool:
         if filename not in self._loaded_files:

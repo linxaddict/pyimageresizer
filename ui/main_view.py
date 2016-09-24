@@ -32,6 +32,8 @@ class MainWindow:
         self.chbox_mdpi = builder.get_object('chbox_mdpi')
         self.chbox_ldpi = builder.get_object('chbox_ldpi')
 
+        self.chbox_override_existing_files = builder.get_object('chbox_override_existing_files')
+
         self.imgv_preview = builder.get_object('imgv_preview')
         self.btn_scale = builder.get_object('btn_scale')
         self.btn_clear = builder.get_object('btn_clear')
@@ -72,6 +74,8 @@ class MainWindow:
         self.chbox_hdpi.set_active(presenter.hdpi)
         self.chbox_mdpi.set_active(presenter.mdpi)
         self.chbox_ldpi.set_active(presenter.ldpi)
+
+        self.chbox_override_existing_files.set_active(presenter.override_existing_files)
 
         self._append_densities(self.density_list_store, presenter.generate_densities())
         self.cbox_density.set_active(0)
@@ -153,6 +157,10 @@ class MainWindow:
             name = model[tree_iter][:1]
 
             self.presenter.density = Density(name[0])
+
+    def on_override_existing_files_toggled(self, widget: Gtk.Widget) -> None:
+        if self.presenter.override_existing_files != widget.get_active():
+            self.presenter.override_existing_files = widget.get_active()
 
     def on_file_chosen(self, widget):
         filename = widget.get_filename()
