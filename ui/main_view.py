@@ -160,10 +160,12 @@ class MainWindow:
 
     # noinspection PyUnusedLocal
     def on_drag_data_received(self, widget, context, x, y, selection, target_type, timestamp):
-        uri = selection.get_data().decode('UTF-8')
-        path = self._parse_uri(uri)
+        data = selection.get_data().decode('UTF-8')
 
-        self._choose_file(path)
+        for uri in data.split('\n'):
+            if uri.strip():
+                path = self._parse_uri(uri)
+                self._choose_file(path)
 
     def toggle_xxxhdpi(self, toggled: bool) -> None:
         self.chbox_xxxhdpi.set_active(toggled)

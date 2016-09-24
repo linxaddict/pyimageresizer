@@ -258,6 +258,7 @@
                     <property name="hexpand">True</property>
                     <property name="vexpand">True</property>
                     <property name="model">images_list_store</property>
+                    <property name="headers_clickable">False</property>
                     <property name="enable_grid_lines">both</property>
                     <child internal-child="selection">
                       <object class="GtkTreeSelection"/>
@@ -277,8 +278,11 @@
                     </child>
                     <child>
                       <object class="GtkTreeViewColumn" id="col_name">
+                        <property name="resizable">True</property>
+                        <property name="sizing">autosize</property>
                         <property name="min_width">100</property>
                         <property name="title" translatable="yes">Name</property>
+                        <property name="expand">True</property>
                         <child>
                           <object class="GtkCellRendererText" id="renderer_name"/>
                           <attributes>
