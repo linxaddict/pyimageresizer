@@ -194,7 +194,7 @@
             </child>
             <child>
               <object class="GtkCheckButton" id="chbox_override_existing_files">
-                <property name="label" translatable="yes"> Overeride existing files</property>
+                <property name="label" translatable="yes"> Override existing files</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
