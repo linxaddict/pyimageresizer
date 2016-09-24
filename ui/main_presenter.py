@@ -1,3 +1,11 @@
+import threading
+
+import gi
+
+gi.require_version('Gtk', '3.0')
+
+from gi.repository import GLib
+
 import os
 
 from image import ImageProcessor
@@ -8,7 +16,6 @@ __email__ = 'mprzepiorkowski@gmail.com'
 
 
 class MainPresenter:
-
     def _get_selected_densities(self) -> [Density]:
         densities = []
 
@@ -31,6 +38,22 @@ class MainPresenter:
             densities.append(Density.ldpi)
 
         return densities
+
+    def _scale(self):
+        GLib.idle_add(self.main_view.on_scale_button_sensitivity_changed, False)
+        error_occurred = False
+
+        for file in self._loaded_files:
+            try:
+                for d in self._get_selected_densities():
+                    self._image_processor.scale(self.density, d, file)
+            except IOError:
+                error_occurred = True
+
+        if error_occurred:
+            GLib.idle_add(self.main_view.show_image_error_dialog)
+
+        GLib.idle_add(self.main_view.on_scale_button_sensitivity_changed, True)
 
     def __init__(self, main_view, image_processor: ImageProcessor):
         self.main_view = main_view
@@ -148,14 +171,6 @@ class MainPresenter:
             self.main_view.hide_images_list()
 
     def scale_selected_files(self) -> None:
-        error_occurred = False
-
-        for file in self._loaded_files:
-            try:
-                for d in self._get_selected_densities():
-                    self._image_processor.scale(self.density, d, file)
-            except IOError:
-                error_occurred = True
-
-        if error_occurred:
-            self.main_view.show_image_error_dialog()
+        thread = threading.Thread(target=self._scale)
+        thread.daemon = True
+        thread.start()
