@@ -162,6 +162,10 @@ class MainPresenter:
     def override_existing_files(self, value) -> None:
         self._override_existing_files = value
 
+    @property
+    def loaded_files(self) -> [str]:
+        return self._loaded_files
+
     def add_image(self, filename: str) -> bool:
         if filename not in self._loaded_files:
             self._loaded_files.append(filename)
@@ -181,7 +185,7 @@ class MainPresenter:
         self._loaded_files.remove(filename)
 
         if len(self._loaded_files) > 1:
-            self.main_view.show_image_placeholer()
+            self.main_view.show_image_placeholder()
             self.main_view.hide_images_list()
         elif not self._loaded_files:
             self.main_view.on_clear_button_sensitivity_changed(False)

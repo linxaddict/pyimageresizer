@@ -85,7 +85,7 @@ class MainPresenterTest(unittest.TestCase):
     def test_scale(self):
         GLib.idle_add = Mock()
 
-        self.main_presenter._loaded_files.append('test_file.png')
+        self.main_presenter.loaded_files.append('test_file.png')
         self.main_presenter.xxxhdpi = True
         self.main_presenter.hdpi = True
         self.main_presenter.density = Density.xxxhdpi
@@ -197,3 +197,83 @@ class MainPresenterTest(unittest.TestCase):
 
         self.main_presenter.override_existing_files = False
         self.assertFalse(self.main_presenter.override_existing_files)
+
+    def test_add_image(self):
+        filename = 'test_filename.png'
+        result = self.main_presenter.add_image(filename)
+
+        self.assertIn(filename, self.main_presenter.loaded_files)
+        self.mock_window.on_scale_button_sensitivity_changed.assert_called_once_with(True)
+        self.mock_window.on_clear_button_sensitivity_changed.assert_called_once_with(True)
+
+        self.assertTrue(result)
+
+    def test_add_image_two_files(self):
+        filename = 'test_filename.png'
+        self.main_presenter.loaded_files.append(filename)
+
+        filename2 = 'test2_filename.png'
+        result = self.main_presenter.add_image(filename2)
+
+        self.assertIn(filename, self.main_presenter.loaded_files)
+        self.assertIn(filename2, self.main_presenter.loaded_files)
+
+        self.mock_window.hide_image_placeholder.assert_called_once_with()
+        self.mock_window.show_images_list.assert_called_once_with()
+
+        self.mock_window.on_scale_button_sensitivity_changed.assert_called_once_with(True)
+        self.mock_window.on_clear_button_sensitivity_changed.assert_called_once_with(True)
+
+        self.assertTrue(result)
+
+    def test_add_image_already_added(self):
+        filename = 'test_filename.png'
+        self.main_presenter.loaded_files.append(filename)
+
+        result = self.main_presenter.add_image(filename)
+
+        self.assertEqual(1, len(self.main_presenter.loaded_files))
+        self.assertFalse(result)
+
+    def test_remove_image(self):
+        filename = 'test_filename.png'
+        self.main_presenter.loaded_files.append(filename)
+
+        self.main_presenter.remove_image(filename)
+
+        self.assertEqual(0, len(self.main_presenter.loaded_files))
+        self.mock_window.on_scale_button_sensitivity_changed.assert_called_once_with(False)
+        self.mock_window.on_clear_button_sensitivity_changed.assert_called_once_with(False)
+
+    def test_remove_image_list_not_empty_after_remove(self):
+        filename = 'test_filename.png'
+        filename2 = 'test_filename2.png'
+        filename3 = 'test_filename3.png'
+
+        self.main_presenter.loaded_files.extend([filename, filename2, filename3])
+
+        self.main_presenter.remove_image(filename)
+
+        self.assertIn(filename2, self.main_presenter.loaded_files)
+        self.assertIn(filename3, self.main_presenter.loaded_files)
+
+        self.mock_window.show_image_placeholder.assert_called_once_with()
+        self.mock_window.hide_images_list.assert_called_once_with()
+
+    def test_clear(self):
+        filename = 'test_filename.png'
+        filename2 = 'test_filename2.png'
+        filename3 = 'test_filename3.png'
+
+        self.main_presenter.loaded_files.extend([filename, filename2, filename3])
+
+        self.main_presenter.clear()
+
+        self.assertEqual(0, len(self.main_presenter.loaded_files))
+
+        self.mock_window.on_scale_button_sensitivity_changed.assert_called_once_with(False)
+        self.mock_window.on_clear_button_sensitivity_changed.assert_called_once_with(False)
+        self.mock_window.show_image_placeholder.assert_called_once_with()
+        self.mock_window.hide_images_list.assert_called_once_with()
+        self.mock_window.load_default_placeholder.assert_called_once_with()
+
