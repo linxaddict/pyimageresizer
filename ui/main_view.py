@@ -46,6 +46,7 @@ class MainWindow:
         self.treev_images = builder.get_object('tree_view_images')
 
         self.overlay = builder.get_object('overlay')
+        self.box_main = builder.get_object('box_main')
 
     @staticmethod
     def _append_densities(list_store: Gtk.ListStore, densities: [str]):
@@ -105,8 +106,7 @@ class MainWindow:
 
         self._find_views(gtk_builder)
 
-        self.overlay.drag_dest_set(Gtk.DestDefaults.MOTION |
-                                   Gtk.DestDefaults.HIGHLIGHT | Gtk.DestDefaults.DROP,
+        self.box_main.drag_dest_set(Gtk.DestDefaults.ALL,
                                    [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
 
         self.presenter = None
