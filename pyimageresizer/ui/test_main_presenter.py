@@ -1,13 +1,12 @@
 import unittest
-
 from unittest.mock import call, Mock
 
-from image import ImageProcessor
-from model import Density
-from ui import MainPresenter
-from ui import MainWindow
-
 import gi
+from image import ImageProcessor
+
+from pyimageresizer.model import Density
+from pyimageresizer.ui import MainPresenter
+from pyimageresizer.ui import MainWindow
 
 gi.require_version('Gtk', '3.0')
 

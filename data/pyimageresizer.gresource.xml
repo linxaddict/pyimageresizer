@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/main_window">
+    <file>main_window.glade</file>
+    <file>icon/ic_image.png</file>
+  </gresource>
+</gresources>

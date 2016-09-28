@@ -1,12 +1,14 @@
-import gi
+import os
 import sys
+
+import gi
 
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk, GLib, Gio
-from ui import MainWindow
-from ui import MainPresenter
-from image import ImageProcessor
+from gi.repository import Gtk, Gio
+from pyimageresizer.ui import MainWindow
+from pyimageresizer.ui import MainPresenter
+from pyimageresizer.image import ImageProcessor
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -80,7 +82,13 @@ class Application(Gtk.Application):
             gtk_builder = Gtk.Builder()
             image_processor = ImageProcessor()
 
-            self.window = MainWindow('res/main_window.glade', gtk_builder, self)
+            base_path = os.path.abspath(os.path.dirname(__file__))
+            resource_path = os.path.join(base_path, 'data/pyimageresizer.gresource')
+            resource = Gio.Resource.load(resource_path)
+            # noinspection PyProtectedMember
+            Gio.Resource._register(resource)
+
+            self.window = MainWindow('/main_window/main_window.glade', gtk_builder, self)
             main_presenter = MainPresenter(self.window, image_processor)
             self.window.set_presenter(main_presenter)
 

@@ -1,7 +1,8 @@
 import os
 
-from model import Density
 from PIL import Image
+
+from pyimageresizer.model import Density
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

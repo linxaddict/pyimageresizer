@@ -219,10 +219,10 @@
           <object class="GtkOverlay" id="overlay">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_left">4</property>
-            <property name="margin_right">4</property>
-            <property name="margin_top">4</property>
-            <property name="margin_bottom">4</property>
+            <property name="margin_left">2</property>
+            <property name="margin_right">2</property>
+            <property name="margin_top">2</property>
+            <property name="margin_bottom">2</property>
             <child>
               <object class="GtkBox" id="box_image_container">
                 <property name="visible">True</property>
@@ -237,7 +237,7 @@
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">center</property>
-                    <property name="pixbuf">img/ic_image.png</property>
+                    <property name="pixbuf">icon/ic_image.png</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>

@@ -9,8 +9,8 @@ from gi.repository import GLib
 
 import os
 
-from image import ImageProcessor
-from model import Density
+from pyimageresizer.image import ImageProcessor
+from pyimageresizer.model import Density
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

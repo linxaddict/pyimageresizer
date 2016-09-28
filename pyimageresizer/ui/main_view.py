@@ -6,7 +6,7 @@ from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 from gi.repository import Gdk
 from gi.repository import GLib
-from model import Density
+from pyimageresizer.model import Density
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -101,13 +101,13 @@ class MainWindow:
             self.treev_model.append([thumbnail, name, '%d x %d' % (size[0], size[1]), img_format])
 
     def __init__(self, view_resource: str, gtk_builder: Gtk.Builder, application: Gtk.Application):
-        gtk_builder.add_from_file(view_resource)
+        gtk_builder.add_from_resource(view_resource)
         gtk_builder.connect_signals(self)
 
         self._find_views(gtk_builder)
 
         self.box_main.drag_dest_set(Gtk.DestDefaults.ALL,
-                                   [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
+                                    [Gtk.TargetEntry.new("text/uri-list", 0, 0)], Gdk.DragAction.COPY)
 
         self.presenter = None
         self.window.set_application(application)
